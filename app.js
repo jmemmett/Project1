@@ -72,7 +72,30 @@ function getElevation(lat, lng) {
         var ftElevation = (result.results[0].elevation) * 3.28084;
         var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
         $("#elevation").text("Elevation: " + Math.floor(ftElevation) + " ft " + inchElevation + " inches")
+        musicGenerator(ftElevation);
     })
+}
+
+function musicGenerator(elevation) {
+    var audioElement = document.createElement("audio");
+    audioElement.setAttribute("src", "assets/Pony.mp3");
+    if (elevation > 10000) {
+// Super duper high
+    } else if (elevation > 9000) {
+// Super high
+    } else if (elevation > 8000) {
+        audioElement.setAttribute("src", "Pony.mp3");
+        audioElement.play();
+// Extremely high
+    } else if (elevation > 7000) {
+// Very high
+    } else if (elevation > 6000) {
+// High
+    } else if (elevation > 5280) {
+// Slightly high
+    } else {
+// Sober
+    }
 }
 
 //------------------------
