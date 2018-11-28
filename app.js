@@ -57,9 +57,9 @@ function getElevation(lat, lng) {
         url: queryURL,
         method: "GET",
     }).then(function (result) {
-        var elevation = result.results[0].elevation;
-        elevation = Math.floor(elevation * 3.28084);
-        $("#elevation").text("Elevation: " + elevation + " ft")
+        var ftElevation = (result.results[0].elevation) * 3.28084;
+        var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
+        $("#elevation").text("Elevation: " + Math.floor(ftElevation) + " ft " + inchElevation + " inches")
     })
 }
 
