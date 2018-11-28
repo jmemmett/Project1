@@ -19,17 +19,28 @@ var database = firebase.database();
 //------------------------
 // Function Definitions //
 //------------------------
-var APIkey = "AIzaSyAC6L0vkMTgQkS6VHpY2kbhcJZp8BI2hSg";
-var address1 = "204 Brook Rd";
-var address2 = "";
-var city = "Evergreen";
-var state = "CO";
-var zip = "";
-var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address1 + address2 + city + state + zip + "&key=" + APIkey;
 
 
-function getGeometry() {
-    var location = "204 Brook Rd Evergreen CO";
+// $("#submit").on("click", function () {
+//     if (all fields are enterred properly) {
+//     var address1 = $("#address").val();
+//     var city = $("#city").val();
+//     var state = $("#state").val();
+//     var zip = $("#zip").val();
+//     $("#address").val("");
+//     $("#city").val("");
+//     $("#state").val("");
+//     $("#zip").val("");
+//     getGeometry(address1, city, state, zip);
+// } else {
+//      modal
+// }
+
+// })
+
+function getGeometry(address1, city, state, zip) {
+    var APIkey = "AIzaSyAC6L0vkMTgQkS6VHpY2kbhcJZp8BI2hSg";
+    var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address1 + city + state + zip + "&key=" + APIkey;
     var responseLatitude = "";
     var responseLongitude = "";
 
@@ -42,7 +53,7 @@ function getGeometry() {
         responseLongitude = response.results[0].geometry.location.lng;
         console.log("Latitude at this address: " + responseLatitude);
         console.log("Longitude at this address: " + responseLongitude);
-        $("#address").html("<h3>" + address1 + " " + address2 + ", " + city + " " + state + " " + zip + "</h3>");
+        $("#address").html("<h3>" + address1 + ", " + city + " " + state + " " + zip + "</h3>");
         $("#geometry").html("<h4>Latitude: " + responseLatitude + "</h4>");
         $("#geometry").append("<h4>Longitude: " + responseLongitude + "</h4>");
 
@@ -52,6 +63,7 @@ function getGeometry() {
 }
 
 function getElevation(lat, lng) {
+    console.log("run");
     var queryURL = "https://api.open-elevation.com/api/v1/lookup\?locations\=" + lat + "," + lng
     $.ajax({
         url: queryURL,
@@ -67,4 +79,4 @@ function getElevation(lat, lng) {
 // Script               //
 //------------------------
 
-getGeometry();
+getGeometry("204 Brook Rd", "Evergreen", "CO", "80439");
