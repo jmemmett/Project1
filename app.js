@@ -1,15 +1,16 @@
 // Initialize Firebase
 var config = {
-    apiKey: "AIzaSyDCwEnmqMtEVEnUcdQ9Vfj2lD6RNqACzVc",
-    authDomain: "elevationfinder-df17a.firebaseapp.com",
-    databaseURL: "https://elevationfinder-df17a.firebaseio.com",
-    projectId: "elevationfinder-df17a",
-    storageBucket: "elevationfinder-df17a.appspot.com",
-    messagingSenderId: "774592182127"
+    apiKey: "AIzaSyBDfVYlkT1YhC6fHJV8fQS0iHzPg-WD9Ow",
+    authDomain: "project-elevation-df0b8.firebaseapp.com",
+    databaseURL: "https://project-elevation-df0b8.firebaseio.com",
+    projectId: "project-elevation-df0b8",
+    storageBucket: "project-elevation-df0b8.appspot.com",
+    messagingSenderId: "360955956682"
 };
+
 firebase.initializeApp(config);
 
-// Create a variable to reference he database
+// Create a variable to reference the database
 var database = firebase.database();
 var over10000elevationAddress = ["505 Harrison Ave", "Leadville", "CO", "80461"];
 var over9000elevationAddress = ["23044 US-6", "Keystone", "CO", "80435"];
@@ -18,6 +19,59 @@ var over7000elevationAddresss = ["845 Meadows Rd", "Aspen", "CO", "81611"];
 var over6000elevationAddress = ["106 E Main St", "Aguilar", "CO", "81020"];
 var over5280elevationAddress = ["7481 Knox Pl", "Westminster", "CO", "80030"];
 var under5280elevationAddress = ["719 Poxson Ave", "Lansing", "MI", "48910"];
+
+// CLICK FUNCTION TO ADD FORM DATA TO DB
+$("#submit").on("click", function (event) {
+
+    event.preventDefault();
+
+    var address1 = $("#inputAddress").val();
+    var city = $("#inputCity").val();
+    var state = $("#inputState").val();
+    var zip = $("#inputZip").val();
+    // var elevation = $("elevation")
+
+    getGeometry(address1, city, state, zip);
+
+    database.ref().push({
+        address1: address1,
+        city: city,
+        state: state,
+        zip: zip
+    });
+
+});
+
+database.ref().on("child_added", function (childSnapshot) {
+
+    city = childSnapshot.val().city;
+    state = childSnapshot.val().state;
+
+    $("#top10places").append("<div>" + city + ", " + state);
+});
+
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+////////////////  E  /////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+////////////////  N  /////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+////////////////  D  /////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
 
 //------------------------
 // Global Variables     //
@@ -63,6 +117,7 @@ function getGeometry(address1, city, state, zip) {
         responseLongitude = response.results[0].geometry.location.lng;
         console.log("Latitude at this address: " + responseLatitude);
         console.log("Longitude at this address: " + responseLongitude);
+
         $("#address").html("<h3>" + address1 + ", " + city + " " + state + " " + zip + "</h3>");
         $("#geometry").html("<h4>Latitude: " + responseLatitude + "</h4>");
         $("#geometry").append("<h4>Longitude: " + responseLongitude + "</h4>");
@@ -79,7 +134,6 @@ function getElevation(lat, lng) {
         url: queryURL,
         method: "GET",
     }).then(function (result) {
-        
         var ftElevation = (result.results[0].elevation) * 3.28084;
         var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
         responseElevation = ((JSON.stringify(ftElevation).split(".")[0]) + " ft " + (JSON.stringify(inchElevation)) + " inches");
@@ -125,5 +179,3 @@ function musicGenerator(elevation) {
 //------------------------
 // Script               //
 //------------------------
-
-getGeometry("204 Brook Rd, Evergreen, CO 80439");
