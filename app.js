@@ -18,13 +18,11 @@ $("#submit").on("click", function (event) {
 
     event.preventDefault();
 
-    var address1 = $("#address").val();
-    var city = $("#city").val();
-    var state = $("#state").val();
-    var zip = $("#zip").val();
+    var address1 = $("#inputAddress").val();
+    var city = $("#inputCity").val();
+    var state = $("#inputState").val();
+    var zip = $("#inputZip").val();
     // var elevation = $("elevation")
-
-    console.log(address1 + city + state + zip);
 
     getGeometry(address1, city, state, zip);
 
@@ -39,11 +37,8 @@ $("#submit").on("click", function (event) {
 
 database.ref().on("child_added", function (childSnapshot) {
 
-    console.log("hello!");
     city = childSnapshot.val().city;
-    console.log(city);
     state = childSnapshot.val().state;
-    console.log(state);
 
     $("#top10places").append("<div>" + city + ", " + state);
 });
@@ -139,7 +134,6 @@ function getElevation(lat, lng) {
 
 function musicGenerator(elevation) {
     var audioElement = document.createElement("audio");
-    audioElement.setAttribute("src", "assets/Pony.mp3");
     if (elevation > 10000) {
 // Super duper high
     } else if (elevation > 9000) {
