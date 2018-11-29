@@ -12,6 +12,13 @@ firebase.initializeApp(config);
 
 // Create a variable to reference the database
 var database = firebase.database();
+var over10000elevationAddress = ["505 Harrison Ave", "Leadville", "CO", "80461"];
+var over9000elevationAddress = ["23044 US-6", "Keystone", "CO", "80435"];
+var over8000elevationAddress = ["204 Brook Rd", "Evergreen", "CO", "80439"];
+var over7000elevationAddresss = ["845 Meadows Rd", "Aspen", "CO", "81611"];
+var over6000elevationAddress = ["106 E Main St", "Aguilar", "CO", "81020"];
+var over5280elevationAddress = ["7481 Knox Pl", "Westminster", "CO", "80030"];
+var under5280elevationAddress = ["719 Poxson Ave", "Lansing", "MI", "48910"];
 
 // CLICK FUNCTION TO ADD FORM DATA TO DB
 $("#submit").on("click", function (event) {
@@ -97,6 +104,9 @@ function getGeometry(address1, city, state, zip) {
     var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address1 + city + state + zip + "&key=" + APIkey;
     var responseLatitude = "";
     var responseLongitude = "";
+    var responseElevation = "";
+    
+
 
     $.ajax({
         url: queryURL,
@@ -124,10 +134,11 @@ function getElevation(lat, lng) {
         url: queryURL,
         method: "GET",
     }).then(function (result) {
-
         var ftElevation = (result.results[0].elevation) * 3.28084;
         var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
-        $("#elevation").text("Elevation: " + Math.floor(ftElevation) + " ft " + inchElevation + " inches");
+        responseElevation = ((JSON.stringify(ftElevation).split(".")[0]) + " ft " + (JSON.stringify(inchElevation)) + " inches");
+        console.log(responseElevation);
+        $("#elevation").text(responseElevation);
         musicGenerator(ftElevation);
     })
 }
@@ -136,19 +147,31 @@ function musicGenerator(elevation) {
     var audioElement = document.createElement("audio");
     if (elevation > 10000) {
 // Super duper high
+        audioElement.setAttribute("src", "assets/audio/imwasted.mp3");
+        audioElement.play();
     } else if (elevation > 9000) {
+        audioElement.setAttribute("src", "assets/audio/wasted.mp3");
+        audioElement.play();
 // Super high
     } else if (elevation > 8000) {
-        audioElement.setAttribute("src", "Pony.mp3");
+        audioElement.setAttribute("src", "assets/audio/badAssWeed.mp3");
         audioElement.play();
 // Extremely high
     } else if (elevation > 7000) {
+        audioElement.setAttribute("src", "#");
+        audioElement.play();
 // Very high
     } else if (elevation > 6000) {
+        audioElement.setAttribute("src", "#");
+        audioElement.play();
 // High
     } else if (elevation > 5280) {
+        audioElement.setAttribute("src", "#");
+        audioElement.play();
 // Slightly high
     } else {
+        audioElement.setAttribute("src", "#");
+        audioElement.play();
 // Sober
     }
 }
