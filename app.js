@@ -1,16 +1,75 @@
 // Initialize Firebase
 var config = {
-    apiKey: "AIzaSyDCwEnmqMtEVEnUcdQ9Vfj2lD6RNqACzVc",
-    authDomain: "elevationfinder-df17a.firebaseapp.com",
-    databaseURL: "https://elevationfinder-df17a.firebaseio.com",
-    projectId: "elevationfinder-df17a",
-    storageBucket: "elevationfinder-df17a.appspot.com",
-    messagingSenderId: "774592182127"
+    apiKey: "AIzaSyBDfVYlkT1YhC6fHJV8fQS0iHzPg-WD9Ow",
+    authDomain: "project-elevation-df0b8.firebaseapp.com",
+    databaseURL: "https://project-elevation-df0b8.firebaseio.com",
+    projectId: "project-elevation-df0b8",
+    storageBucket: "project-elevation-df0b8.appspot.com",
+    messagingSenderId: "360955956682"
 };
+
 firebase.initializeApp(config);
 
-// Create a variable to reference he database
+// Create a variable to reference the database
 var database = firebase.database();
+
+// CLICK FUNCTION TO ADD FORM DATA TO DB
+$("#submit").on("click", function (event) {
+
+    event.preventDefault();
+
+    var address1 = $("#address").val();
+    var city = $("#city").val();
+    var state = $("#state").val();
+    var zip = $("#zip").val();
+    // var elevation = $("elevation")
+
+    console.log(address1 + city + state + zip);
+
+    getGeometry(address1, city, state, zip);
+
+    database.ref().push({
+        address1: address1,
+        city: city,
+        state: state,
+        zip: zip
+    });
+
+});
+
+database.ref().on("child_added", function (childSnapshot) {
+
+    console.log("hello!");
+    city = childSnapshot.val().city;
+    console.log(city);
+    state = childSnapshot.val().state;
+    console.log(state);
+
+    $("#top10places").append("<div>" + city + ", " + state);
+});
+
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+////////////////  E  /////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+////////////////  N  /////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+////////////////  D  /////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
 
 //------------------------
 // Global Variables     //
@@ -19,17 +78,28 @@ var database = firebase.database();
 //------------------------
 // Function Definitions //
 //------------------------
-var APIkey = "AIzaSyAC6L0vkMTgQkS6VHpY2kbhcJZp8BI2hSg";
-var address1 = "204 Brook Rd";
-var address2 = "";
-var city = "Evergreen";
-var state = "CO";
-var zip = "";
-var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address1 + address2 + city + state + zip + "&key=" + APIkey;
 
 
-function getGeometry() {
-    var location = "204 Brook Rd Evergreen CO";
+// $("#submit").on("click", function () {
+//     if (all fields are enterred properly) {
+//     var address1 = $("#address").val();
+//     var city = $("#city").val();
+//     var state = $("#state").val();
+//     var zip = $("#zip").val();
+//     $("#address").val("");
+//     $("#city").val("");
+//     $("#state").val("");
+//     $("#zip").val("");
+//     getGeometry(address1, city, state, zip);
+// } else {
+//      modal
+// }
+
+// })
+
+function getGeometry(address1, city, state, zip) {
+    var APIkey = "AIzaSyAC6L0vkMTgQkS6VHpY2kbhcJZp8BI2hSg";
+    var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address1 + city + state + zip + "&key=" + APIkey;
     var responseLatitude = "";
     var responseLongitude = "";
 
@@ -42,7 +112,7 @@ function getGeometry() {
         responseLongitude = response.results[0].geometry.location.lng;
         console.log("Latitude at this address: " + responseLatitude);
         console.log("Longitude at this address: " + responseLongitude);
-        $("#address").html("<h3>" + address1 + " " + address2 + ", " + city + " " + state + " " + zip + "</h3>");
+        $("#address").html("<h3>" + address1 + ", " + city + " " + state + " " + zip + "</h3>");
         $("#geometry").html("<h4>Latitude: " + responseLatitude + "</h4>");
         $("#geometry").append("<h4>Longitude: " + responseLongitude + "</h4>");
 
@@ -52,6 +122,7 @@ function getGeometry() {
 }
 
 function getElevation(lat, lng) {
+    console.log("run");
     var queryURL = "https://api.open-elevation.com/api/v1/lookup\?locations\=" + lat + "," + lng
     $.ajax({
         url: queryURL,
@@ -67,4 +138,4 @@ function getElevation(lat, lng) {
 // Script               //
 //------------------------
 
-getGeometry();
+// getGeometry("204 Brook Rd", "Evergreen", "CO", "80439");
