@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!-- jQuery Script Tag -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <!-- Firebase Script Tag -->
+
+         <!-- Firebase Script Tag -->
     <script src="https://www.gstatic.com/firebasejs/5.5.9/firebase.js"></script>
+
 
 </head>
 <body>
@@ -19,7 +21,20 @@
         
         <!-- ask the user to enter an address -->
         <div id="address-entry">
-            
+
+        <form>
+                Address:<br>
+                <input type="text" name="name" placeholder="204 Brook Rd" id="address">
+                
+                <br>
+                City<br>
+                <input type="text" name="city" placeholder="Evergreen" id="city"><br>
+                State<br>
+                <input type="text" name="state" placeholder="CO" id="state"><br>
+                Zip:<br>
+                <input type="number" name="zip" placeholder="80439" id="zip"><br>
+                <input type="submit" id="submit">
+            </form>
 
         </div>
 
@@ -27,6 +42,8 @@
         <div id="geometry"></div>
         <div id="elevation"></div>
     </div>
+
+    <div id="top10places"></div>
     
     <script type="text/javascript" src="app.js"></script>
     
