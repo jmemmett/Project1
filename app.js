@@ -42,7 +42,7 @@ function getGeometry() {
         responseLongitude = response.results[0].geometry.location.lng;
         console.log("Latitude at this address: " + responseLatitude);
         console.log("Longitude at this address: " + responseLongitude);
-        $("#address").html("<h3>" + address1 + " " + address2 + ", " + city + " " + state + " " + zip + "</h3>");
+        $("#address").text(address1 + " " + address2 + ", " + city + " " + state + " " + zip);
         $("#geometry").html("<h4>Latitude: " + responseLatitude + "</h4>");
         $("#geometry").append("<h4>Longitude: " + responseLongitude + "</h4>");
 
@@ -59,7 +59,7 @@ function getElevation(lat, lng) {
     }).then(function (result) {
         var elevation = result.results[0].elevation;
         elevation = Math.floor(elevation * 3.28084);
-        $("#elevation").text("Elevation: " + elevation + " ft")
+        $("#elevation").text(elevation + " ft")
     })
 }
 
