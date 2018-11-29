@@ -18,13 +18,11 @@ $("#submit").on("click", function (event) {
 
     event.preventDefault();
 
-    var address1 = $("#address").val();
-    var city = $("#city").val();
-    var state = $("#state").val();
-    var zip = $("#zip").val();
+    var address1 = $("#inputAddress").val();
+    var city = $("#inputCity").val();
+    var state = $("#inputState").val();
+    var zip = $("#inputZip").val();
     // var elevation = $("elevation")
-
-    console.log(address1 + city + state + zip);
 
     getGeometry(address1, city, state, zip);
 
@@ -39,11 +37,8 @@ $("#submit").on("click", function (event) {
 
 database.ref().on("child_added", function (childSnapshot) {
 
-    console.log("hello!");
     city = childSnapshot.val().city;
-    console.log(city);
     state = childSnapshot.val().state;
-    console.log(state);
 
     $("#top10places").append("<div>" + city + ", " + state);
 });
@@ -112,6 +107,7 @@ function getGeometry(address1, city, state, zip) {
         responseLongitude = response.results[0].geometry.location.lng;
         console.log("Latitude at this address: " + responseLatitude);
         console.log("Longitude at this address: " + responseLongitude);
+
         $("#address").html("<h3>" + address1 + ", " + city + " " + state + " " + zip + "</h3>");
         $("#geometry").html("<h4>Latitude: " + responseLatitude + "</h4>");
         $("#geometry").append("<h4>Longitude: " + responseLongitude + "</h4>");
@@ -128,16 +124,16 @@ function getElevation(lat, lng) {
         url: queryURL,
         method: "GET",
     }).then(function (result) {
+
         var ftElevation = (result.results[0].elevation) * 3.28084;
         var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
-        $("#elevation").text("Elevation: " + Math.floor(ftElevation) + " ft " + inchElevation + " inches")
+        $("#elevation").text("Elevation: " + Math.floor(ftElevation) + " ft " + inchElevation + " inches");
         musicGenerator(ftElevation);
     })
 }
 
 function musicGenerator(elevation) {
     var audioElement = document.createElement("audio");
-    audioElement.setAttribute("src", "assets/Pony.mp3");
     if (elevation > 10000) {
 // Super duper high
     } else if (elevation > 9000) {
