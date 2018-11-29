@@ -15,7 +15,8 @@ var database = firebase.database();
 //------------------------
 // Global Variables     //
 //------------------------
-
+var randomFacts = ["Elevation is measured as distance above sea level", "Fact 2", "Fact 3", "Fact 4", "Fact 5", "Fact 6", "Fact 7", "Fact 8", "Fact 9", "Fact 10"];
+var count = 0;
 //------------------------
 // Function Definitions //
 //------------------------
@@ -56,19 +57,34 @@ function getGeometry(address1, city, state, zip) {
         $("#address").html("<h3>" + address1 + ", " + city + " " + state + " " + zip + "</h3>");
         $("#geometry").html("<h4>Latitude: " + responseLatitude + "</h4>");
         $("#geometry").append("<h4>Longitude: " + responseLongitude + "</h4>");
-
+        $("#calculating-elevation").html("<h3> Calculating...</h3>");
+        factGenerator();
         getElevation(responseLatitude, responseLongitude);
+        setInterval(factGenerator, 5000);
     })
 
 }
 
+function factGenerator() {
+    count++;
+    var x = $("#elevation").html();
+    var y = [...x];
+    if (count < 5 && y[0] === undefined) {
+        var random = Math.floor(Math.random() * 10);
+        $("#random-facts").html(randomFacts[random]);
+    } else {
+        $("#random-facts").html("")
+    }
+    
+}
+
 function getElevation(lat, lng) {
-    console.log("run");
     var queryURL = "https://api.open-elevation.com/api/v1/lookup\?locations\=" + lat + "," + lng
     $.ajax({
         url: queryURL,
         method: "GET",
     }).then(function (result) {
+        $("#calculating-elevation").html("")
         var ftElevation = (result.results[0].elevation) * 3.28084;
         var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
         $("#elevation").text("Elevation: " + Math.floor(ftElevation) + " ft " + inchElevation + " inches")
@@ -78,7 +94,6 @@ function getElevation(lat, lng) {
 
 function musicGenerator(elevation) {
     var audioElement = document.createElement("audio");
-    audioElement.setAttribute("src", "assets/Pony.mp3");
     if (elevation > 10000) {
 // Super duper high
     } else if (elevation > 9000) {
