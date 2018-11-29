@@ -1,16 +1,75 @@
 // Initialize Firebase
 var config = {
-    apiKey: "AIzaSyDCwEnmqMtEVEnUcdQ9Vfj2lD6RNqACzVc",
-    authDomain: "elevationfinder-df17a.firebaseapp.com",
-    databaseURL: "https://elevationfinder-df17a.firebaseio.com",
-    projectId: "elevationfinder-df17a",
-    storageBucket: "elevationfinder-df17a.appspot.com",
-    messagingSenderId: "774592182127"
+    apiKey: "AIzaSyBDfVYlkT1YhC6fHJV8fQS0iHzPg-WD9Ow",
+    authDomain: "project-elevation-df0b8.firebaseapp.com",
+    databaseURL: "https://project-elevation-df0b8.firebaseio.com",
+    projectId: "project-elevation-df0b8",
+    storageBucket: "project-elevation-df0b8.appspot.com",
+    messagingSenderId: "360955956682"
 };
+
 firebase.initializeApp(config);
 
-// Create a variable to reference he database
+// Create a variable to reference the database
 var database = firebase.database();
+
+// CLICK FUNCTION TO ADD FORM DATA TO DB
+$("#submit").on("click", function (event) {
+
+    event.preventDefault();
+
+    var address1 = $("#address").val();
+    var city = $("#city").val();
+    var state = $("#state").val();
+    var zip = $("#zip").val();
+    // var elevation = $("elevation")
+
+    console.log(address1 + city + state + zip);
+
+    getGeometry(address1, city, state, zip);
+
+    database.ref().push({
+        address1: address1,
+        city: city,
+        state: state,
+        zip: zip
+    });
+
+});
+
+database.ref().on("child_added", function (childSnapshot) {
+
+    console.log("hello!");
+    city = childSnapshot.val().city;
+    console.log(city);
+    state = childSnapshot.val().state;
+    console.log(state);
+
+    $("#top10places").append("<div>" + city + ", " + state);
+});
+
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+////////////////  E  /////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+////////////////  N  /////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+////////////////  D  /////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
 
 //------------------------
 // Global Variables     //
@@ -74,7 +133,30 @@ function getElevation(lat, lng) {
         var ftElevation = (result.results[0].elevation) * 3.28084;
         var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
         $("#elevation").text("Elevation: " + Math.floor(ftElevation) + " ft " + inchElevation + " inches");
+        musicGenerator(ftElevation);
     })
+}
+
+function musicGenerator(elevation) {
+    var audioElement = document.createElement("audio");
+    audioElement.setAttribute("src", "assets/Pony.mp3");
+    if (elevation > 10000) {
+// Super duper high
+    } else if (elevation > 9000) {
+// Super high
+    } else if (elevation > 8000) {
+        audioElement.setAttribute("src", "Pony.mp3");
+        audioElement.play();
+// Extremely high
+    } else if (elevation > 7000) {
+// Very high
+    } else if (elevation > 6000) {
+// High
+    } else if (elevation > 5280) {
+// Slightly high
+    } else {
+// Sober
+    }
 }
 
 //------------------------
