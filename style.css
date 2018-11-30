@@ -30,3 +30,8 @@
 .results {
     margin: 50px;
 }
+
+#map-holder {
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
