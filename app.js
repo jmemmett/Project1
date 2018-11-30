@@ -10,201 +10,157 @@ var config = {
 
 firebase.initializeApp(config);
 
-// Create a variable to reference the database
+//----------------------
+// Global Variables
+//----------------------
+
 var database = firebase.database();
-var over10000elevationAddress = ["505 Harrison Ave", "Leadville", "CO", "80461"];
-var over9000elevationAddress = ["23044 US-6", "Keystone", "CO", "80435"];
-var over8000elevationAddress = ["204 Brook Rd", "Evergreen", "CO", "80439"];
-var over7000elevationAddresss = ["845 Meadows Rd", "Aspen", "CO", "81611"];
-var over6000elevationAddress = ["106 E Main St", "Aguilar", "CO", "81020"];
-var over5280elevationAddress = ["7481 Knox Pl", "Westminster", "CO", "80030"];
-var under5280elevationAddress = ["719 Poxson Ave", "Lansing", "MI", "48910"];
-
 var ftElevation;
-
 var address1;
 var city;
 var state;
 var zip;
-
-// CLICK FUNCTION TO ADD FORM DATA TO DB
-$("#submit").on("click", function (event) {
-
-    event.preventDefault();
-
-    address1 = $("#inputAddress").val();
-    city = $("#inputCity").val();
-    state = $("#inputState").val();
-    zip = $("#inputZip").val();
-
-    getGeometry(address1, city, state, zip);
-
-    database.ref().push({
-        address1: address1,
-        city: city,
-        state: state,
-        zip: zip,
-        elevation: ftElevation
-    });
-
-});
-
-database.ref().orderByChild("elevation").limitToLast(5).on("child_added", function (snapshot) {
-
-    var city = snapshot.val().city;
-    var state = snapshot.val().state;
-    var elevation = snapshot.val().elevation;
-
-    // NEED TO DO: EXCLUDE REPEAT RESULTS FROM PRINTING TO PAGE
-    // DISPLAY IN DESCENDING ORDER
-    // STYLIZE ELEVATION (COMES DEFAULT WITH A BUNCH OF DECIMAL PLACES)
-
-    $("#highestPlaces").append("<div>" + city + ", " + state + ": " + elevation + " feet");
-
-});
-
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-////////////////  E  /////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-////////////////  N  /////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-////////////////  D  /////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-//////////////////////////////////////
-
-//------------------------
-// Global Variables     //
-//------------------------
 var randomFacts = ["Elevation is measured as distance above sea level", "Fact 2", "Fact 3", "Fact 4", "Fact 5", "Fact 6", "Fact 7", "Fact 8", "Fact 9", "Fact 10"];
 var count = 0;
-//------------------------
-// Function Definitions //
-//------------------------
 
+//-----------------------
+// Function Definitions
+//-----------------------
 
-// $("#submit").on("click", function () {
-//     if (all fields are enterred properly) {
-//     var address1 = $("#address").val();
-//     var city = $("#city").val();
-//     var state = $("#state").val();
-//     var zip = $("#zip").val();
-//     $("#address").val("");
-//     $("#city").val("");
-//     $("#state").val("");
-//     $("#zip").val("");
-//     getGeometry(address1, city, state, zip);
-// } else {
-//      modal
-// }
+    // Listener Event for the Submit Button
+    $("#submit").on("click", function (event) {
 
-// })
+        event.preventDefault();
 
-function getGeometry(address1, city, state, zip) {
-    var APIkey = "AIzaSyAC6L0vkMTgQkS6VHpY2kbhcJZp8BI2hSg";
-    var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address1 + city + state + zip + "&key=" + APIkey;
-    var responseLatitude = "";
-    var responseLongitude = "";
-    var responseElevation = "";
-    
+        address1 = $("#inputAddress").val().trim();
+        city = $("#inputCity").val().trim();
+        state = $("#inputState").val().trim();
+        zip = $("#inputZip").val().trim();
+        // var elevation = $("#elevation").val().trim();
+        $(".results").show();
+        $("#address").html("<h3>" + address1 + "<br>" + city + ", " + state + " " + zip + "</h3>");
+        getGeometry(address1, city, state, zip);
+        playJeopardy = document.createElement("audio");
+        playJeopardy.setAttribute("src", "assets/audio/jeopardy.mp3")
+        playJeopardy.play();
+    });
 
+    // Call to retrieve information from the dB and display the top 10 elevations on the screen
+    database.ref().on("child_added", function (childSnapshot) {
+        city = childSnapshot.val().city;
+        state = childSnapshot.val().state;
+        $("#top10places").append("<div>" + city + ", " + state);
+    });
 
-    $.ajax({
-        url: queryURL,
-        method: "GET"
+    // First API call using the address information entered by the user, returning longitude and latitude
+    function getGeometry(address1, city, state, zip) {
+        var APIkey = "AIzaSyAC6L0vkMTgQkS6VHpY2kbhcJZp8BI2hSg";
+        var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address1 + city + state + zip + "&key=" + APIkey;
+        var responseLatitude = "";
+        var responseLongitude = "";
+        var responseElevation = "";
 
-    }).then(function (response) {
-        responseLatitude = response.results[0].geometry.location.lat;
-        responseLongitude = response.results[0].geometry.location.lng;
-        console.log("Latitude at this address: " + responseLatitude);
-        console.log("Longitude at this address: " + responseLongitude);
-
-        $("#address").html("<h3>" + address1 + ", " + city + " " + state + " " + zip + "</h3>");
-        $("#geometry").html("<h4>Latitude: " + responseLatitude + "</h4>");
-        $("#geometry").append("<h4>Longitude: " + responseLongitude + "</h4>");
-        $("#calculating-elevation").html("<h3> Calculating...</h3>");
-        factGenerator();
-        getElevation(responseLatitude, responseLongitude);
-        setInterval(factGenerator, 5000);
-    })
-
-}
-
-function factGenerator() {
-    count++;
-    var x = $("#elevation").html();
-    var y = [...x];
-    if (count < 5 && y[0] === undefined) {
-        var random = Math.floor(Math.random() * 10);
-        $("#random-facts").html(randomFacts[random]);
-    } else {
-        $("#random-facts").html("")
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function (response) {
+            responseLatitude = response.results[0].geometry.location.lat;
+            responseLongitude = response.results[0].geometry.location.lng;
+            $("#geometry").html("<h4>Latitude: " + responseLatitude + "</h4>");
+            $("#geometry").append("<h4>Longitude: " + responseLongitude + "</h4>");
+            $("#calculating-elevation").html("<h3> Calculating...</h3>");
+            factGenerator();
+            getElevation(responseLatitude, responseLongitude);
+            setInterval(factGenerator, 5000);
+        })
     }
-    
-}
 
-function getElevation(lat, lng) {
-    var queryURL = "https://api.open-elevation.com/api/v1/lookup\?locations\=" + lat + "," + lng
-    $.ajax({
-        url: queryURL,
-        method: "GET",
-    }).then(function (result) {
-        $("#calculating-elevation").html("")
-        var ftElevation = (result.results[0].elevation) * 3.28084;
-        var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
-        responseElevation = ((JSON.stringify(ftElevation).split(".")[0]) + " ft " + (JSON.stringify(inchElevation)) + " inches");
-        console.log(responseElevation);
-        $("#elevation").text(responseElevation);
-        musicGenerator(ftElevation);
-    })
-}
-
-function musicGenerator(elevation) {
-    var audioElement = document.createElement("audio");
-    if (elevation > 10000) {
-// Super duper high
-        audioElement.setAttribute("src", "assets/audio/imwasted.mp3");
-        audioElement.play();
-    } else if (elevation > 9000) {
-        audioElement.setAttribute("src", "assets/audio/wasted.mp3");
-        audioElement.play();
-// Super high
-    } else if (elevation > 8000) {
-        audioElement.setAttribute("src", "assets/audio/badAssWeed.mp3");
-        audioElement.play();
-// Extremely high
-    } else if (elevation > 7000) {
-        audioElement.setAttribute("src", "#");
-        audioElement.play();
-// Very high
-    } else if (elevation > 6000) {
-        audioElement.setAttribute("src", "#");
-        audioElement.play();
-// High
-    } else if (elevation > 5280) {
-        audioElement.setAttribute("src", "#");
-        audioElement.play();
-// Slightly high
-    } else {
-        audioElement.setAttribute("src", "#");
-        audioElement.play();
-// Sober
+    // Function to take the latitude and longitude from the previous API call to get the elevation at those coordinates
+    function getElevation(lat, lng) {
+        var queryURL = "https://api.open-elevation.com/api/v1/lookup\?locations\=" + lat + "," + lng
+        $.ajax({
+            url: queryURL,
+            method: "GET",
+        }).then(function (result) {
+            $("#elevation").show();
+            $("#calculating-elevation").html("")
+            var ftElevation = (result.results[0].elevation) * 3.28084;
+            var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
+            responseElevation = ((JSON.stringify(ftElevation).split(".")[0]) + " ft " + (JSON.stringify(inchElevation)) + " inches");
+            $("#elevation").text(responseElevation);
+            playJeopardy.pause();
+            musicGenerator(ftElevation);
+        })
+        database.ref().push({
+            address1: address1,
+            city: city,
+            state: state,
+            zip: zip,
+            elevation: ftElevation
+        });
     }
-}
 
-//------------------------
-// Script               //
-//------------------------
+    // Function called to display facts while waiting for the response from the 2nd API call
+    function factGenerator() {
+        count++;
+        var x = $("#elevation").html();
+        var y = [...x];
+        if (count < 5 && y[0] === undefined) {
+            var random = Math.floor(Math.random() * 10);
+            $("#random-facts").html(randomFacts[random]);
+        } else {
+            $("#random-facts").html("")
+        }
+    }  
+
+    // Display of highest previous elevations from Firebase
+    database.ref().orderByChild("elevation").limitToLast(5).on("child_added", function (snapshot) {
+
+        var city = snapshot.val().city;
+        var state = snapshot.val().state;
+        var elevation = snapshot.val().elevation;
+        // NEED TO DO: EXCLUDE REPEAT RESULTS FROM PRINTING TO PAGE
+        // DISPLAY IN DESCENDING ORDER
+        // STYLIZE ELEVATION (COMES DEFAULT WITH A BUNCH OF DECIMAL PLACES)
+        $("#highestPlaces").append("<div>" + city + ", " + state + ": " + elevation + " feet");
+    });
+
+    // Functon to determine which stone quote to play based on the elevation returned
+    function musicGenerator(elevation) {
+        var audioElement = document.createElement("audio");
+        if (elevation > 10000) {
+            // Super duper high
+            audioElement.setAttribute("src", "assets/audio/imwasted.mp3");
+            audioElement.play();
+        } else if (elevation > 9000) {
+            // Super high
+            audioElement.setAttribute("src", "assets/audio/wasted.mp3");
+            audioElement.play();
+        } else if (elevation > 8000) {
+            // Extremely high
+            audioElement.setAttribute("src", "assets/audio/badAssWeed.mp3");
+            audioElement.play();
+        } else if (elevation > 7000) {
+            // Very high
+            audioElement.setAttribute("src", "#");
+            audioElement.play();
+        } else if (elevation > 6000) {
+            // High
+            audioElement.setAttribute("src", "#");
+            audioElement.play();
+            // Slightly high
+            audioElement.setAttribute("src", "#");
+            audioElement.play();
+        } else {
+            // Sober
+            audioElement.setAttribute("src", "#");
+            audioElement.play();
+        }
+    }
+
+    //-------------------
+    // Script
+    //-------------------
+
+    $(".results").hide();
+    $("#elevation").hide();

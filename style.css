@@ -1,0 +1,32 @@
+.jumbotron {
+    background-color: green;
+    color: white;
+    text-shadow: 4px 4px black;
+}
+
+.slideUp {
+    animation-duration: 2s;
+    animation-name: up
+}
+
+@keyframes up {
+    from {
+        margin-bottom: 100%;
+    }
+
+    to {
+        margin-bottom: 1%;
+    }
+}
+
+#submit {
+    background-color: green;
+    color: white;
+    font-size: 14px;
+    border: 1px solid black;
+    margin-top: 10px;
+}
+
+.results {
+    margin: 50px;
+}
