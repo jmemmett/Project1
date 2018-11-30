@@ -20,16 +20,22 @@ var over6000elevationAddress = ["106 E Main St", "Aguilar", "CO", "81020"];
 var over5280elevationAddress = ["7481 Knox Pl", "Westminster", "CO", "80030"];
 var under5280elevationAddress = ["719 Poxson Ave", "Lansing", "MI", "48910"];
 
+var ftElevation;
+
+var address1;
+var city;
+var state;
+var zip;
+
 // CLICK FUNCTION TO ADD FORM DATA TO DB
 $("#submit").on("click", function (event) {
 
     event.preventDefault();
 
-    var address1 = $("#inputAddress").val();
-    var city = $("#inputCity").val();
-    var state = $("#inputState").val();
-    var zip = $("#inputZip").val();
-    // var elevation = $("elevation")
+    address1 = $("#inputAddress").val();
+    city = $("#inputCity").val();
+    state = $("#inputState").val();
+    zip = $("#inputZip").val();
 
     getGeometry(address1, city, state, zip);
 
@@ -37,17 +43,24 @@ $("#submit").on("click", function (event) {
         address1: address1,
         city: city,
         state: state,
-        zip: zip
+        zip: zip,
+        elevation: ftElevation
     });
 
 });
 
-database.ref().on("child_added", function (childSnapshot) {
+database.ref().orderByChild("elevation").limitToLast(5).on("child_added", function (snapshot) {
 
-    city = childSnapshot.val().city;
-    state = childSnapshot.val().state;
+    var city = snapshot.val().city;
+    var state = snapshot.val().state;
+    var elevation = snapshot.val().elevation;
 
-    $("#top10places").append("<div>" + city + ", " + state);
+    // NEED TO DO: EXCLUDE REPEAT RESULTS FROM PRINTING TO PAGE
+    // DISPLAY IN DESCENDING ORDER
+    // STYLIZE ELEVATION (COMES DEFAULT WITH A BUNCH OF DECIMAL PLACES)
+
+    $("#highestPlaces").append("<div>" + city + ", " + state + ": " + elevation + " feet");
+
 });
 
 //////////////////////////////////////
