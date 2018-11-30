@@ -6,69 +6,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>My Geocode App</title>
-    <!-- Latest compiled and minified CSS -->
-    <!-- <link rel="stylesheet" type="text/css" href="css/style.css"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-        crossorigin="anonymous">
-    <!-- jQuery Script Tag -->
+    <!-- Bootstrap & CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-
-         <!-- Firebase Script Tag -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/5.5.9/firebase.js"></script>
-
-
 </head>
 
 <body>
     <div class="container">
-
     <div id="address-details">
-        
-        <!-- ask the user to enter an address -->
-        <!-- <div id="address-entry"> -->
-
-        <!-- <form>
-                Address:<br>
-                <input type="text" name="name" placeholder="204 Brook Rd" id="address">
-                
-                <br>
-                City<br>
-                <input type="text" name="city" placeholder="Evergreen" id="city"><br>
-                State<br>
-                <input type="text" name="state" placeholder="CO" id="state"><br>
-                Zip:<br>
-                <input type="number" name="zip" placeholder="80439" id="zip"><br>
-                <input type="submit" id="submit">
-            </form> -->
-
-        <!-- Jumbotron Title -->
         <div class="jumbotron">
-            <h1 class="text-center">How High Am I?</h1>
-            <!-- <h3 class="text-center">Get your elevation</h3> -->
+            <h1 class="text-center slideUp">How High Am I?</h1>
         </div>
         <div class="row">
-            <!-- Address card-->
             <div class="col-lg-5">
                 <div class="card">
                     <div class="card-header">
                         <h3>Enter an address:</h3>
                     </div>
                     <div class="card-body">
-                        <!-- Address Form (note the various input "types")-->
                         <form>
-                            <div class="form-group">
-                                <label for="inputAddress">Address</label>
-                                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="inputAddress">Address</label>
+                                    <input type="text" class="form-control" id="inputAddress" placeholder="Enter a physical U.S. address">
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-5">
                                     <label for="inputCity">City</label>
-                                    <input type="text" class="form-control" id="inputCity">
+                                    <input type="text" class="form-control" id="inputCity" placeholder="City Name">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="inputState">State</label>
                                     <select id="inputState" class="form-control">
-                                        <option selected>Choose...</option>
+                                        <option select>State</option>
                                         <option value="Alabama">Alabama</option>
                                         <option value="Alaska">Alaska</option>
                                         <option value="Arizona">Arizona</option>
@@ -119,36 +94,35 @@
                                         <option value="West Virginia">West Virginia</option>
                                         <option value="Wisconsin">Wisconsin</option>
                                         <option value="Wyoming">Wyoming</option>
-
                                     </select>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <label for="inputZip">Zip</label>
+                                    <label for="inputZip" placeholder="Zip Code">Zip</label>
                                     <input type="text" class="form-control" id="inputZip">
                                 </div>
                             </div>
-                            <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+                            <div class="form-row">
+                               <button type="submit" id="submit" class="btn btn-primary">Submit</button> 
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
             <div class="col-lg-1"></div>
             <div class="col-lg-6">
-            <div>
-                <div class="container">
-                    <h3>The elevation is:</h3>
-                    <div><h2 id="elevation"></h2></div>
-                    <div><h3>at: <span id="address"></span></h3></div>
-                    <div id="geometry"></div>
-                    
+                <div class="container results">
+                    <h4>Address Entered:</h4>
+                    <h4><span id="address"></span></h4>
+                    <h4>Elevation: <span id="elevation"></span></h4>
+                    <!-- <div id="geometry"></div> -->
                 </div>
             </div>
-        </div>
         </div>
         <div class = "row">
             <div class="col-lg-4"></div>
              <div class="col-lg-6">
                 <h3>Highest places searched:</h3>
+                <div id="highestPlaces"></div>
                 <!-- <ol>
                         <li id = "highest"></li>
                         <li id = "secondHighest"></li>
@@ -157,11 +131,10 @@
                         <li id = "fifthHighest"></li>
                       </ol> -->
             </div>
-        
         </div>
+
+        <!-- Custom JavaScript -->
         <script type="text/javascript" src="app.js"></script>
-
-
 </body>
 
 </html>
