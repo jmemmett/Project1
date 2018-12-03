@@ -27,8 +27,13 @@
     margin-top: 10px;
 }
 
+h4 {
+    margin-top: 25px;
+}
+
 #results {
-    margin: 50px;
+    margin-top: 25px;
+
 }
 
 #map-holder {
