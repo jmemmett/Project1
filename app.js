@@ -20,10 +20,8 @@ var address1;
 var city;
 var state;
 var zip;
-var responseLatitude = "";
-var responseLongitude = "";
-var responseElevation = "";
-var mymap = ""
+var randomFacts = ["Elevation is measured as distance above sea level", "Fact 2", "Fact 3", "Fact 4", "Fact 5", "Fact 6", "Fact 7", "Fact 8", "Fact 9", "Fact 10"];
+var count = 0;
 
 //-----------------------
 // Function Definitions
@@ -31,33 +29,26 @@ var mymap = ""
 
 // Listener Event for the Submit Button
 $("#submit").on("click", function (event) {
-
+    var x = $("#inputZip").val()
     event.preventDefault();
+    console.log(typeof x);
+    if (x.length !== 5) {
+        $('#error1Modal').modal('toggle');
+    } else {
 
-    ftElevation = "";
-    address1 = "";
-    city = "";
-    state = "";
-    zip = "";
-    responseLatitude = "";
-    responseLongitude = "";
-    responseElevation = "";
+        address1 = $("#inputAddress").val().trim();
+        city = $("#inputCity").val().trim();
+        state = $("#inputState").val().trim();
+        zip = $("#inputZip").val().trim();
+        $("#results").show();
+        $("#address").html("<h3>" + address1 + "<br>" + city + ", " + state + " " + zip + "</h3>");
+        getGeometry(address1, city, state, zip);
+        playJeopardy = document.createElement("audio");
+        playJeopardy.setAttribute("src", "assets/audio/jeopardy.mp3")
+        playJeopardy.play();
+        removeAddressInfo();
+    }
 
-    // empty previous map contents (in case of a subsequent address entered)
-    $("#map-holder").empty();
-
-    address1 = $("#inputAddress").val().trim();
-    city = $("#inputCity").val().trim();
-    state = $("#inputState").val().trim();
-    zip = $("#inputZip").val().trim();
-    $("#elevation").empty();
-    $("#results").show();
-    $("#address").html("<h3>" + address1 + "<br>" + city + ", " + state + " " + zip + "</h3>");
-    getGeometry(address1, city, state, zip);
-    playJeopardy = document.createElement("audio");
-    playJeopardy.setAttribute("src", "assets/audio/jeopardy.mp3")
-    playJeopardy.play();
-    removeAddressInfo();
 });
 
 // remove previous address information entered by the user
@@ -72,33 +63,40 @@ function removeAddressInfo() {
 function getGeometry(address1, city, state, zip) {
     var APIkey = "AIzaSyAC6L0vkMTgQkS6VHpY2kbhcJZp8BI2hSg";
     var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address1 + city + state + zip + "&key=" + APIkey;
-    
+    var responseLatitude = "";
+    var responseLongitude = "";
+    var responseElevation = "";
+
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function (response) {
         responseLatitude = response.results[0].geometry.location.lat;
         responseLongitude = response.results[0].geometry.location.lng;
+        $("#calculating-elevation").html("<h3> Calculating...</h3>");
+        factGenerator();
         mapGenerator(responseLatitude, responseLongitude);
         getElevation(responseLatitude, responseLongitude);
-    })
+        setInterval(factGenerator, 5000);
+    }).fail(function (err) {
+        $('#error2Modal').modal('toggle');
+    });
 }
 
 // Function to take the latitude and longitude from the previous API call to get the elevation at those coordinates
 function getElevation(lat, lng) {
-    console.log('get elevation');
     var queryURL = "https://api.open-elevation.com/api/v1/lookup\?locations\=" + lat + "," + lng
     $.ajax({
         url: queryURL,
         method: "GET",
     }).then(function (result) {
+        $("#elevation").show();
+        $("#calculating-elevation").html("")
         ftElevation = (result.results[0].elevation) * 3.28084;
         var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
         responseElevation = ((JSON.stringify(ftElevation).split(".")[0]) + " ft " + (JSON.stringify(inchElevation)) + " inches");
-        $("#elevation").show();
         $("#elevation").text(responseElevation);
         playJeopardy.pause();
-        $("#submit").show();
         musicGenerator(ftElevation);
 
         // Pushes user input + elevation to Firebase
@@ -109,26 +107,33 @@ function getElevation(lat, lng) {
             zip: zip,
             elevation: ftElevation
         });
-        
+
     })
 }
 
+// Function called to display facts while waiting for the response from the 2nd API call
+function factGenerator() {
+    count++;
+    var x = $("#elevation").html();
+    var y = [...x];
+    if (count < 5 && y[0] === undefined) {
+        var random = Math.floor(Math.random() * 10);
+        $("#random-facts").html(randomFacts[random]);
+    } else {
+        $("#random-facts").html("")
+    }
+}
+
 // Display of highest previous elevations from Firebase
-database.ref().orderByChild("elevation").limitToLast(1).on("child_added", function (snapshot) {
+database.ref().orderByChild("elevation").limitToLast(5).on("child_added", function (snapshot) {
 
     city = snapshot.val().city;
     state = snapshot.val().state;
     elevation = snapshot.val().elevation;
-    $("#highestPlaces").empty().append("<div>" + city + ", " + state + ": " + elevation + " feet");
-});
-
-// Display lowest elevation from Firebase
-database.ref().orderByChild("elevation").limitToFirst(1).on("child_added", function (snapshot) {
-
-    city = snapshot.val().city;
-    state = snapshot.val().state;
-    elevation = snapshot.val().elevation;
-    $("#lowestPlaces").empty().append("<div>" + city + ", " + state + ": " + elevation + " feet");
+    // NEED TO DO: EXCLUDE REPEAT RESULTS FROM PRINTING TO PAGE
+    // DISPLAY IN DESCENDING ORDER
+    // STYLIZE ELEVATION (COMES DEFAULT WITH A BUNCH OF DECIMAL PLACES)
+    $("#highestPlaces").append("<div>" + city + ", " + state + ": " + elevation + " feet");
 });
 
 // Functon to determine which stone quote to play based on the elevation returned
@@ -167,21 +172,16 @@ function musicGenerator(elevation) {
 // Map Functionality
 function mapGenerator(lat, long) {
     console.log(lat, long);
-    mymap = "";
-    mymap = L.map('map-holder').setView([lat, long], 15);
-    console.log("1");
+    var mymap = L.map('map-holder').setView([lat, long], 15);
     L.marker([lat, long]).addTo(mymap).bindPopup("<h3>" + address1 + "</br>" + city + " " + state + " " + zip + "</h3>").openPopup();
-    console.log("2");
     $("#map-holder").css("height", "500px");
-    console.log("3");
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(mymap);
     $(document).ready(function () {
         L.Util.requestAnimFrame(mymap.invalidateSize, mymap, !1, mymap._container);
     });
-    console.log("4");
-    }
+}
 
 //-------------------
 // Script
