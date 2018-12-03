@@ -42,6 +42,7 @@ $("#submit").on("click", function (event) {
         zip = $("#inputZip").val().trim();
         $("#results").show();
         $("#address").html("<h3>" + address1 + "<br>" + city + ", " + state + " " + zip + "</h3>");
+        $("#elevation").empty();
         getGeometry(address1, city, state, zip);
         playJeopardy = document.createElement("audio");
         playJeopardy.setAttribute("src", "assets/audio/jeopardy.mp3")
@@ -133,7 +134,16 @@ database.ref().orderByChild("elevation").limitToLast(5).on("child_added", functi
     // NEED TO DO: EXCLUDE REPEAT RESULTS FROM PRINTING TO PAGE
     // DISPLAY IN DESCENDING ORDER
     // STYLIZE ELEVATION (COMES DEFAULT WITH A BUNCH OF DECIMAL PLACES)
-    $("#highestPlaces").append("<div>" + city + ", " + state + ": " + elevation + " feet");
+    $("#highestPlaces").empty().append("<div>" + city + ", " + state + ": " + elevation + " feet");
+});
+
+// Display lowest elevation from Firebase
+database.ref().orderByChild("elevation").limitToFirst(1).on("child_added", function (snapshot) {
+
+    city = snapshot.val().city;
+    state = snapshot.val().state;
+    elevation = snapshot.val().elevation;
+    $("#lowestPlaces").empty().append("<div>" + city + ", " + state + ": " + elevation + " feet");
 });
 
 // Functon to determine which stone quote to play based on the elevation returned
