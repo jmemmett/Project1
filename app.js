@@ -54,13 +54,6 @@ var count = 0;
         $("#inputZip").val("");
     }
 
-    // Call to retrieve information from the dB and display the top 10 elevations on the screen
-    database.ref().on("child_added", function (childSnapshot) {
-        city = childSnapshot.val().city;
-        state = childSnapshot.val().state;
-        $("#top10places").append("<div>" + city + ", " + state);
-    });
-
     // First API call using the address information entered by the user, returning longitude and latitude
     function getGeometry(address1, city, state, zip) {
         var APIkey = "AIzaSyAC6L0vkMTgQkS6VHpY2kbhcJZp8BI2hSg";
