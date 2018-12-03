@@ -37,7 +37,7 @@ $("#submit").on("click", function (event) {
     state = $("#inputState").val().trim();
     zip = $("#inputZip").val().trim();
 
-    $(".results").show();
+    $("#results").show();
     $("#address").html("<h3>" + address1 + "<br>" + city + ", " + state + " " + zip + "</h3>");
     getGeometry(address1, city, state, zip);
     playJeopardy = document.createElement("audio");
@@ -168,7 +168,7 @@ function musicGenerator(elevation) {
 function mapGenerator(lat, long) {
     console.log(lat, long);
     var mymap = L.map('map-holder').setView([lat, long], 15);
-    L.marker([lat, long]).addTo(mymap).bindPopup("<h3>" + address1 + "</h3></br>" + city + " " + state + " " + zip).openPopup()
+    L.marker([lat, long]).addTo(mymap).bindPopup("<h3>" + address1 + "</br>" + city + " " + state + " " + zip + "</h3>").openPopup();
     $("#map-holder").css("height", "500px");
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -182,5 +182,5 @@ function mapGenerator(lat, long) {
 // Script
 //-------------------
 
-$(".results").hide();
+$("#results").hide();
 $("#elevation").hide();
