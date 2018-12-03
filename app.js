@@ -172,7 +172,7 @@ var count = 0;
     function mapGenerator(lat, long) {
         console.log(lat, long);
         var mymap = L.map('map-holder').setView([lat, long], 15);
-        L.marker([lat, long]).addTo(mymap)
+        L.marker([lat, long]).addTo(mymap);
         $("#map-holder").css("height", "500px");
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
