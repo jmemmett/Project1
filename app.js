@@ -43,7 +43,16 @@ var count = 0;
         playJeopardy = document.createElement("audio");
         playJeopardy.setAttribute("src", "assets/audio/jeopardy.mp3")
         playJeopardy.play();
+        removeAddressInfo();
     });
+
+    // remove previous address information entered by the user
+    function removeAddressInfo() {
+        $("#inputAddress").val("");
+        $("#inputCity").val("");
+        $("#inputState").val("");
+        $("#inputZip").val("");
+    }
 
     // Call to retrieve information from the dB and display the top 10 elevations on the screen
     database.ref().on("child_added", function (childSnapshot) {
@@ -131,30 +140,30 @@ var count = 0;
         var audioElement = document.createElement("audio");
         if (elevation > 10000) {
             // Super duper high
-            audioElement.setAttribute("src", "assets/audio/imwasted.mp3");
+            audioElement.setAttribute("src", "assets/audio/acid.mp3");
             audioElement.play();
         } else if (elevation > 9000) {
             // Super high
-            audioElement.setAttribute("src", "assets/audio/wasted.mp3");
+            audioElement.setAttribute("src", "assets/audio/hairgrowing.mp3");
             audioElement.play();
         } else if (elevation > 8000) {
             // Extremely high
-            audioElement.setAttribute("src", "assets/audio/badAssWeed.mp3");
+            audioElement.setAttribute("src", "assets/audio/imwasted.mp3");
             audioElement.play();
         } else if (elevation > 7000) {
             // Very high
-            audioElement.setAttribute("src", "#");
+            audioElement.setAttribute("src", "assets/audio/wasted.mp3");
             audioElement.play();
         } else if (elevation > 6000) {
             // High
-            audioElement.setAttribute("src", "#");
+            audioElement.setAttribute("src", "assets/audio/badAssWeed.mp3");
             audioElement.play();
             // Slightly high
-            audioElement.setAttribute("src", "#");
+            audioElement.setAttribute("src", "assets/audio/booboo.mp3");
             audioElement.play();
         } else {
             // Sober
-            audioElement.setAttribute("src", "#");
+            audioElement.setAttribute("src", "assets/audio/hey_bud.mp3");
             audioElement.play();
         }
     }
