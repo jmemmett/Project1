@@ -166,7 +166,7 @@ function musicGenerator(elevation) {
 function mapGenerator(lat, long) {
     console.log(lat, long);
     var mymap = L.map('map-holder').setView([lat, long], 15);
-    L.marker([lat, long]).addTo(mymap)
+    L.marker([lat, long]).addTo(mymap).bindPopup("<h3>" + address1 + "</h3></br>" + city + " " + state + " " + zip).openPopup()
     $("#map-holder").css("height", "500px");
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -174,14 +174,7 @@ function mapGenerator(lat, long) {
     $(document).ready(function () {
         L.Util.requestAnimFrame(mymap.invalidateSize, mymap, !1, mymap._container);
     });
-    // L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    //     maxZoom: 18,
-    //     id: 'mapbox.streets',
-    //     accessToken: 'pk.eyJ1IjoiY2Nhc3RybzUwMiIsImEiOiJjanA0YzF2YW0wcmNvM3JzMGphcDBnZnE5In0.aCIiyzNQ98KCgBujXno2wQ'
-    // }).addTo(mymap);
-
-}
+    }
 
 //-------------------
 // Script
