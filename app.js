@@ -50,6 +50,7 @@ $("#submit").on("click", function (event) {
     city = $("#inputCity").val().trim();
     state = $("#inputState").val().trim();
     zip = $("#inputZip").val().trim();
+    $("#elevation").empty();
     $("#results").show();
     $("#address").html("<h3>" + address1 + "<br>" + city + ", " + state + " " + zip + "</h3>");
     getGeometry(address1, city, state, zip);
@@ -113,15 +114,21 @@ function getElevation(lat, lng) {
 }
 
 // Display of highest previous elevations from Firebase
-database.ref().orderByChild("elevation").limitToLast(5).on("child_added", function (snapshot) {
+database.ref().orderByChild("elevation").limitToLast(1).on("child_added", function (snapshot) {
 
     city = snapshot.val().city;
     state = snapshot.val().state;
     elevation = snapshot.val().elevation;
-    // NEED TO DO: EXCLUDE REPEAT RESULTS FROM PRINTING TO PAGE
-    // DISPLAY IN DESCENDING ORDER
-    // STYLIZE ELEVATION (COMES DEFAULT WITH A BUNCH OF DECIMAL PLACES)
-    $("#highestPlaces").append("<div>" + city + ", " + state + ": " + elevation + " feet");
+    $("#highestPlaces").empty().append("<div>" + city + ", " + state + ": " + elevation + " feet");
+});
+
+// Display lowest elevation from Firebase
+database.ref().orderByChild("elevation").limitToFirst(1).on("child_added", function (snapshot) {
+
+    city = snapshot.val().city;
+    state = snapshot.val().state;
+    elevation = snapshot.val().elevation;
+    $("#lowestPlaces").empty().append("<div>" + city + ", " + state + ": " + elevation + " feet");
 });
 
 // Functon to determine which stone quote to play based on the elevation returned
