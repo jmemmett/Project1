@@ -68,8 +68,6 @@ function getGeometry(address1, city, state, zip) {
     }).then(function (response) {
         responseLatitude = response.results[0].geometry.location.lat;
         responseLongitude = response.results[0].geometry.location.lng;
-        $("#geometry").html("<h4>Latitude: " + responseLatitude + "</h4>");
-        $("#geometry").append("<h4>Longitude: " + responseLongitude + "</h4>");
         $("#calculating-elevation").html("<h3> Calculating...</h3>");
         factGenerator();
         mapGenerator(responseLatitude, responseLongitude);
