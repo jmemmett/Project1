@@ -57,7 +57,6 @@ $("#submit").on("click", function (event) {
     playJeopardy.setAttribute("src", "assets/audio/jeopardy.mp3")
     playJeopardy.play();
     removeAddressInfo();
-    // clearVariables();
 });
 
 // remove previous address information entered by the user
