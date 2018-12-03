@@ -80,7 +80,6 @@ function getGeometry(address1, city, state, zip) {
         responseLongitude = response.results[0].geometry.location.lng;
         mapGenerator(responseLatitude, responseLongitude);
         getElevation(responseLatitude, responseLongitude);
-        setInterval(factGenerator, 5000);
     })
 }
 
