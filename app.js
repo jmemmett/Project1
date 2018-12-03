@@ -29,21 +29,26 @@ var count = 0;
 
 // Listener Event for the Submit Button
 $("#submit").on("click", function (event) {
-
+    var x = $("#inputZip").val()
     event.preventDefault();
+    console.log(typeof x);
+    if (x.length !== 5) {
+        $('#error1Modal').modal('toggle');
+    } else {
 
-    address1 = $("#inputAddress").val().trim();
-    city = $("#inputCity").val().trim();
-    state = $("#inputState").val().trim();
-    zip = $("#inputZip").val().trim();
+        address1 = $("#inputAddress").val().trim();
+        city = $("#inputCity").val().trim();
+        state = $("#inputState").val().trim();
+        zip = $("#inputZip").val().trim();
+        $("#results").show();
+        $("#address").html("<h3>" + address1 + "<br>" + city + ", " + state + " " + zip + "</h3>");
+        getGeometry(address1, city, state, zip);
+        playJeopardy = document.createElement("audio");
+        playJeopardy.setAttribute("src", "assets/audio/jeopardy.mp3")
+        playJeopardy.play();
+        removeAddressInfo();
+    }
 
-    $("#results").show();
-    $("#address").html("<h3>" + address1 + "<br>" + city + ", " + state + " " + zip + "</h3>");
-    getGeometry(address1, city, state, zip);
-    playJeopardy = document.createElement("audio");
-    playJeopardy.setAttribute("src", "assets/audio/jeopardy.mp3")
-    playJeopardy.play();
-    removeAddressInfo();
 });
 
 // remove previous address information entered by the user
@@ -73,7 +78,9 @@ function getGeometry(address1, city, state, zip) {
         mapGenerator(responseLatitude, responseLongitude);
         getElevation(responseLatitude, responseLongitude);
         setInterval(factGenerator, 5000);
-    })
+    }).fail(function (err) {
+        $('#error2Modal').modal('toggle');
+    });
 }
 
 // Function to take the latitude and longitude from the previous API call to get the elevation at those coordinates
@@ -100,7 +107,7 @@ function getElevation(lat, lng) {
             zip: zip,
             elevation: ftElevation
         });
-        
+
     })
 }
 
@@ -174,7 +181,7 @@ function mapGenerator(lat, long) {
     $(document).ready(function () {
         L.Util.requestAnimFrame(mymap.invalidateSize, mymap, !1, mymap._container);
     });
-    }
+}
 
 //-------------------
 // Script
