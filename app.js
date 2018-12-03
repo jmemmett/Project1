@@ -50,7 +50,7 @@ $("#submit").on("click", function (event) {
 function removeAddressInfo() {
     $("#inputAddress").val("");
     $("#inputCity").val("");
-    $("#inputState").val("");
+    $("#inputState").val("State");
     $("#inputZip").val("");
 }
 
