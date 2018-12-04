@@ -20,7 +20,6 @@ var address1;
 var city;
 var state;
 var zip;
-var randomFacts = ["Elevation is measured as distance above sea level", "Fact 2", "Fact 3", "Fact 4", "Fact 5", "Fact 6", "Fact 7", "Fact 8", "Fact 9", "Fact 10"];
 var count = 0;
 
 //-----------------------
@@ -31,11 +30,9 @@ var count = 0;
 $("#submit").on("click", function (event) {
     var x = $("#inputZip").val()
     event.preventDefault();
-    console.log(typeof x);
     if (x.length !== 5) {
-        $('#error1Modal').modal('toggle');
+        $('#missingZipModal').modal('toggle');
     } else {
-
         address1 = $("#inputAddress").val().trim();
         city = $("#inputCity").val().trim();
         state = $("#inputState").val().trim();
@@ -43,11 +40,8 @@ $("#submit").on("click", function (event) {
         $("#results").show();
         $("#address").html("<h3>" + address1 + "<br>" + city + ", " + state + " " + zip + "</h3>");
         $("#elevation").empty();
-        getGeometry(address1, city, state, zip);
-        playJeopardy = document.createElement("audio");
-        playJeopardy.setAttribute("src", "assets/audio/jeopardy.mp3")
-        playJeopardy.play();
         removeAddressInfo();
+        getGeometry(address1, city, state, zip);
     }
 
 });
@@ -66,21 +60,27 @@ function getGeometry(address1, city, state, zip) {
     var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address1 + city + state + zip + "&key=" + APIkey;
     var responseLatitude = "";
     var responseLongitude = "";
-    var responseElevation = "";
-
+    playJeopardy = document.createElement("audio");
+    playJeopardy.setAttribute("src", "assets/audio/jeopardy.mp3")
+    playJeopardy.play();
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function (response) {
+        count++;
         responseLatitude = response.results[0].geometry.location.lat;
         responseLongitude = response.results[0].geometry.location.lng;
         $("#calculating-elevation").html("<h3> Calculating...</h3>");
-        factGenerator();
         mapGenerator(responseLatitude, responseLongitude);
         getElevation(responseLatitude, responseLongitude);
-        setInterval(factGenerator, 5000);
     }).fail(function (err) {
-        $('#error2Modal').modal('toggle');
+        playJeopardy.pause();
+        if (count >= 1) {
+            $('#refreshPageModal').modal('toggle')
+        } else {
+            $('#badAddressModal').modal('toggle');
+        }
+        
     });
 }
 
@@ -95,7 +95,7 @@ function getElevation(lat, lng) {
         $("#calculating-elevation").html("")
         ftElevation = (result.results[0].elevation) * 3.28084;
         var inchElevation = (Math.floor(parseInt(JSON.stringify(ftElevation).split(".")[1]) * 0.00012));
-        responseElevation = ((JSON.stringify(ftElevation).split(".")[0]) + " ft " + (JSON.stringify(inchElevation)) + " inches");
+        var responseElevation = ((JSON.stringify(ftElevation).split(".")[0]) + " ft " + (JSON.stringify(inchElevation)) + " inches");
         $("#elevation").text(responseElevation);
         playJeopardy.pause();
         musicGenerator(ftElevation);
@@ -112,28 +112,12 @@ function getElevation(lat, lng) {
     })
 }
 
-// Function called to display facts while waiting for the response from the 2nd API call
-function factGenerator() {
-    count++;
-    var x = $("#elevation").html();
-    var y = [...x];
-    if (count < 5 && y[0] === undefined) {
-        var random = Math.floor(Math.random() * 10);
-        $("#random-facts").html(randomFacts[random]);
-    } else {
-        $("#random-facts").html("")
-    }
-}
-
 // Display of highest previous elevations from Firebase
 database.ref().orderByChild("elevation").limitToLast(5).on("child_added", function (snapshot) {
 
     city = snapshot.val().city;
     state = snapshot.val().state;
     elevation = snapshot.val().elevation;
-    // NEED TO DO: EXCLUDE REPEAT RESULTS FROM PRINTING TO PAGE
-    // DISPLAY IN DESCENDING ORDER
-    // STYLIZE ELEVATION (COMES DEFAULT WITH A BUNCH OF DECIMAL PLACES)
     $("#highestPlaces").empty().append("<div>" + city + ", " + state + ": " + elevation + " feet");
 });
 

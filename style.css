@@ -40,3 +40,21 @@ h4 {
     margin-top: 25px;
     margin-bottom: 20px;
 }
+
+@media screen and (max-width: 980px) {
+    .container {
+      width: 90%;
+    }
+}
+  
+  @media screen and (max-width: 768px) {
+    .container {
+      width: 90%;
+    }
+}
+
+  @media screen and (max-width: 640px) {
+    .container {
+      width: 90%;
+    }
+}
